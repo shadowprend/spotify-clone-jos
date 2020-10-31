@@ -15,21 +15,22 @@ import java.net.URI;
 
 @Component
 public class SpotifyConnect {
-    private static final String CLIENT_ID = "";
-    private static final String SECRET_ID = "";
-    private static final String REDIRECT_URI = "http://localhost:8080/api/spotify-auth";
+    private static final String CLIENT_ID = "5ed267b3c0874b44838007d52dfaa70d";
+    private static final String SECRET_ID = "1967c9034c894936813766d7481d8782";
+    private static final String REDIRECT_URI = "http://localhost:8080/api/spotify-auth/callback";
     private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
             .setClientId(CLIENT_ID)
             .setClientSecret(SECRET_ID)
             .setRedirectUri(SpotifyHttpManager.makeUri(REDIRECT_URI))
             .build();
     private static final AuthorizationCodeUriRequest authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
-            .build();;
+            .build();
 
     @PostConstruct
     public void openAuthWindow() {
         final URI uri = authorizationCodeUriRequest.execute();
         Runtime runtime = Runtime.getRuntime();
+      
         try {
             runtime.exec("rundll32 url.dll,FileProtocolHandler " + uri);
         } catch (IOException e) {
@@ -42,7 +43,7 @@ public class SpotifyConnect {
         }
     }
 
-    public static void addAuthCode(String code) throws ParseException, SpotifyWebApiException, IOException {
+    public  void addAuthCode(String code) throws ParseException, SpotifyWebApiException, IOException {
         AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(code).build();
 
         final AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRequest.execute();
